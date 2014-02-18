@@ -9,7 +9,21 @@
 #import "NSString+URLEncoding.h"
 
 @implementation NSString (URLEncoding)
-    -(NSString *)urlEncodeUsingEncoding:(NSStringEncoding)encoding
+
+    -(NSString *)urlEncode
+    {
+        CFStringRef string = CFURLCreateStringByAddingPercentEscapes(nil,
+                                                                        (CFStringRef)self,
+                                                                        nil,
+                                                                        (CFStringRef)@"!*'\"();:@&=+$,/?%#[]% ",
+                                                                        kCFStringEncodingUTF8);
+        // Convert CFString to NSString object.
+        NSString *encodedNSString = (__bridge NSString *)string;
+        
+        return encodedNSString;
+    }
+
+    -(NSString *)testCat
     {
         NSString *result = [NSString stringWithUTF8String:"foo"];
         

@@ -7,11 +7,26 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "NSString+URLEncoding.h"
 
 int main(int argc, const char * argv[])
 {
     
     @autoreleasepool {
+        
+        NSString *testString;
+        
+        testString = [NSString stringWithUTF8String:"some url parsms + here/or something"];
+        
+        NSLog(@"%@", testString);
+        
+        NSString *something;
+        
+        something = [testString urlEncode];
+        
+        NSLog(@"%@", something);
+        
+        exit(1);
         
         bool debug = false;
         
@@ -37,7 +52,6 @@ int main(int argc, const char * argv[])
             // Output usage.
             printf("usage: proof [search term]\n");
             
-            // leave with code 1.
             exit(1);
         }
         
@@ -45,7 +59,7 @@ int main(int argc, const char * argv[])
         NSString *url = [NSString stringWithUTF8String:"http://api.stackoverflow.com/1.1/search"];
         
         // Maximum number of results to display.
-        int maxResults = 5;
+        int maxResults = 2;
         
         // Parameter in which to sort the results by.
         NSString *order = [NSString stringWithUTF8String:"votes"];
@@ -64,22 +78,21 @@ int main(int argc, const char * argv[])
         
         [request setHTTPMethod:@"GET"];
         
-        NSError *error;
+        NSError *errorConn;
         NSHTTPURLResponse *response;
         NSData *data = [NSURLConnection sendSynchronousRequest:request
                                         returningResponse:&response
-                                        error:&error];
+                                        error:&errorConn];
         
-        // Check for connection error.
-        if (error){
+        // errorConn for connection error.
+        if (errorConn){
             
             printf("Error: Cannot connect to Stack Overflow\n");
             
             if (debug){
-                NSLog(@"%@", [error description]);
+                NSLog(@"%@", [errorConn description]);
             }
             
-            // leave with code 2.
             exit(2);
             
         }
@@ -93,15 +106,96 @@ int main(int argc, const char * argv[])
                 NSLog(@"%li", [response statusCode]);
             }
             
-            // leave with code 3.
             exit(3);
         }
         
-        NSLog(@"%@", data);
+        // Create an NSDictionary from the NSData data object.
+        NSError *errorDict = nil;
+        NSDictionary *answersDict = [NSJSONSerialization JSONObjectWithData:data
+                                                    options:0
+                                                    error:&errorDict];
         
-        //NSString *result2 = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        // Check that creation happened without error.
+        if (errorDict != nil) {
+            
+            printf("Error: Answer could not be found\n");
+            
+            exit(4);
+        }
+        
+        // Grab the answers node from the answersDict NSDictionary object.
+        NSArray *answersArray = [answersDict objectForKey:@"questions"];
+        
+        // Check that we have at least one answer
+        if ([answersArray count] <= 0){
+            
+            printf("Error: No answers found. What on earth are you searching for!?\n");
+            
+            exit(5);
+        }
+        
+        bool answeredQuestionFound = false;
+        
+        for (NSDictionary *answer in answersArray) {
+            
+            if ([answer objectForKey:@"accepted_answer_id"]){
+                
+                answeredQuestionFound = true;
+                
+                NSLog(@"Correct answer ID %@", [answer objectForKey:@"question_id"]);
+                
+                // Get the answer.
+                
+                
+                break;
+                
+            }
+            
+        }
+        
+        if (!answeredQuestionFound){
+            NSLog(@"Correct answer not found");
+        }
+        
+        // Print the first question found.
+        // @TODO Loop through each question, finding the first that
+        //NSLog(@"%@", [answersArray objectAtIndex:1]);
+        //NSLog(@"%@", [[answersArray objectAtIndex:0] objectForKey:@""]);
         
         
+        /*
+        for(id key in answersDict) {
+            id answer = [answersDict objectForKey:key];
+            NSLog(@"%@", [key class]);
+            NSLog(@"%@", [answer class]);
+        }
+        */
+        
+        
+        
+        /*
+        
+        NSData *webData = [@"{\"1\": {\"name\": \"Jerry\",\"age\": \"12\"}, \"2\": {\"name\": \"Bob\",\"age\": \"16\"}}" dataUsingEncoding:NSUTF8StringEncoding];
+        NSLog(@"%@", [webData description]);
+        exit(1);
+        
+        NSError *jsonError;
+        NSDictionary *jsonDict = [NSJSONSerialization JSONObjectWithData:answersJSONString
+                                                        options:0
+                                                        error:&jsonError];
+        NSLog(@"JSON DIct: %@", jsonDict);
+         */
+        
+        //NSLog(@"%@", answersNSDictionary);
+        
+        
+        
+        
+        
+        
+        // Get the answer...
+        // http://api.stackoverflow.com/1.1/answers/178450?body=true
+        // http://api.stackoverflow.com/1.1/usage/methods/answers-by-ids
     
     }
     
