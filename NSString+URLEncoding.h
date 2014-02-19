@@ -12,6 +12,4 @@
 
     -(NSString *)urlEncode;
 
-    -(NSString *)testCat;
-
 @end

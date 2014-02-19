@@ -14,20 +14,6 @@ int main(int argc, const char * argv[])
     
     @autoreleasepool {
         
-        NSString *testString;
-        
-        testString = [NSString stringWithUTF8String:"some url parsms + here/or something"];
-        
-        NSLog(@"%@", testString);
-        
-        NSString *something;
-        
-        something = [testString urlEncode];
-        
-        NSLog(@"%@", something);
-        
-        exit(1);
-        
         bool debug = false;
         
         if (debug){
@@ -64,15 +50,25 @@ int main(int argc, const char * argv[])
         // Parameter in which to sort the results by.
         NSString *order = [NSString stringWithUTF8String:"votes"];
         
+        // The term to search for.
+        NSString *queryStringRaw;
+        queryStringRaw = [NSString stringWithUTF8String:argv[1]];
+        
+        // Encode the query string.
+        NSString *queryStringEncoded;
+        queryStringEncoded = [queryStringRaw urlEncode];
+        
         // The query string for the API.
         NSString *queryString = [NSString stringWithFormat:@"?intitle=%@&pagesize=%i&sort=%@",
-                                                            [NSString stringWithUTF8String:argv[1]],
+                                                            queryStringEncoded,
                                                             maxResults,
                                                             order];
         
         NSURL *endPoint = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@",
                                                                            url,
                                                                            queryString]];
+        
+        NSLog(@"it is: %@", endPoint);
         
         NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:endPoint];
         
@@ -157,45 +153,12 @@ int main(int argc, const char * argv[])
             NSLog(@"Correct answer not found");
         }
         
-        // Print the first question found.
-        // @TODO Loop through each question, finding the first that
-        //NSLog(@"%@", [answersArray objectAtIndex:1]);
-        //NSLog(@"%@", [[answersArray objectAtIndex:0] objectForKey:@""]);
-        
-        
-        /*
-        for(id key in answersDict) {
-            id answer = [answersDict objectForKey:key];
-            NSLog(@"%@", [key class]);
-            NSLog(@"%@", [answer class]);
-        }
-        */
-        
-        
-        
-        /*
-        
-        NSData *webData = [@"{\"1\": {\"name\": \"Jerry\",\"age\": \"12\"}, \"2\": {\"name\": \"Bob\",\"age\": \"16\"}}" dataUsingEncoding:NSUTF8StringEncoding];
-        NSLog(@"%@", [webData description]);
-        exit(1);
-        
-        NSError *jsonError;
-        NSDictionary *jsonDict = [NSJSONSerialization JSONObjectWithData:answersJSONString
-                                                        options:0
-                                                        error:&jsonError];
-        NSLog(@"JSON DIct: %@", jsonDict);
-         */
-        
-        //NSLog(@"%@", answersNSDictionary);
-        
-        
-        
-        
-        
-        
         // Get the answer...
+        // http://api.stackoverflow.com/1.0/usage
+        // http://api.stackoverflow.com/1.1/usage/methods/search
         // http://api.stackoverflow.com/1.1/answers/178450?body=true
         // http://api.stackoverflow.com/1.1/usage/methods/answers-by-ids
+        // http://pw1.netcom.com/~tjensen/ptr/ch1x.htm
     
     }
     

@@ -23,10 +23,4 @@
         return encodedNSString;
     }
 
-    -(NSString *)testCat
-    {
-        NSString *result = [NSString stringWithUTF8String:"foo"];
-        
-        return result;
-    }
 @end
