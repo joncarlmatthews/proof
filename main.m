@@ -130,12 +130,50 @@ int main(int argc, const char * argv[])
             
             if ([answer objectForKey:@"accepted_answer_id"]){
                 
+                // Answer found
                 answeredQuestionFound = true;
                 
-                NSLog(@"Correct answer ID %@", [answer objectForKey:@"question_id"]);
+                // Grab the correct answer's answer ID.
+                NSNumber *correctAnswerID;
+                correctAnswerID = [answer objectForKey:@"accepted_answer_id"];
                 
-                // Get the answer.
+                if(DEBUG_MODE){
+                    NSLog(@"Correct answer ID %@", [answer objectForKey:@"accepted_answer_id"]);
+                }
                 
+                // /2.2/answers/17187693?order=desc&sort=activity&site=stackoverflow&filter=!9WgJfjxaP
+                
+                // Create an ApiRequest instance for the API answer retreival.
+                ApiRequest *apiAnswerFetch = [[ApiRequest alloc] initWithDomain: @"api.stackexchange.com"];
+                
+                // Set the method.
+                NSMutableString *method = [NSMutableString stringWithString:@"/2.2/answers/"];
+                [method appendString:[NSString stringWithString:[correctAnswerID stringValue]]];
+                
+                [apiAnswerFetch setMethod:method];
+                
+                // Create a dictionary of parameters to send to the API.
+                NSDictionary *paramBind = [[NSDictionary alloc] initWithObjectsAndKeys:@"stackoverflow", @"site",
+                                                                                       @"!9WgJfjxaP", @"filter",
+                                                                                       nil];
+                // Set the parameters.
+                [apiAnswerFetch setParams: paramBind];
+                
+                // Make the request.
+                if ([apiAnswerFetch makeRequest] != APIREQUEST_REQUEST_SUCCESS){
+                    
+                    printf("Error: Cannot connect to Stack Overflow\n");
+                    
+                    if (DEBUG_MODE){
+                        NSLog(@"%@", [apiAnswerFetch error]);
+                    }
+                    
+                    exit(6);
+                }
+                
+                printf("outputting answer...");
+            
+                // Stop iterating.
                 break;
                 
             }
@@ -143,7 +181,7 @@ int main(int argc, const char * argv[])
         }
         
         if (!answeredQuestionFound){
-            NSLog(@"Correct answer not found");
+            printf("Error: Correct answer not found.\n");
         }
     
     }
