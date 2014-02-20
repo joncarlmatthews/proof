@@ -93,14 +93,14 @@ int main(int argc, const char * argv[])
         
         // Create an NSDictionary from the NSData data object.
         NSError *errorDict = nil;
-        NSDictionary *answersDict = [NSJSONSerialization JSONObjectWithData:[apiQuestionSearch data]
-                                                                    options:0
-                                                                      error:&errorDict];
+        NSDictionary *questionDict = [NSJSONSerialization JSONObjectWithData:[apiQuestionSearch data]
+                                                            options:0
+                                                            error:&errorDict];
         
         // Check that creation happened without error.
         if (errorDict != nil) {
             
-            printf("Error: Answer could not be found\n");
+            printf("Error: Question could not be found\n");
             
             if(DEBUG_MODE){
                 NSLog(@"%@", errorDict);
@@ -109,16 +109,16 @@ int main(int argc, const char * argv[])
             exit(4);
         }
         
-        // Grab the answers node from the answersDict NSDictionary object.
-        NSArray *answersArray = [answersDict objectForKey:@"items"];
+        // Grab the questions node from the questionDict NSDictionary object.
+        NSArray *questionArray = [questionDict objectForKey:@"items"];
         
-        // Check that we have at least one answer
-        if ([answersArray count] <= 0){
+        // Check that we have at least one question
+        if ([questionArray count] <= 0){
             
-            printf("Error: No answers found.\n");
+            printf("Error: Question could not be found\n");
             
             if(DEBUG_MODE){
-                NSLog(@"%@", answersArray);
+                NSLog(@"%@", questionArray);
             }
             
             exit(5);
@@ -126,22 +126,20 @@ int main(int argc, const char * argv[])
         
         bool answeredQuestionFound = false;
         
-        for (NSDictionary *answer in answersArray) {
+        for (NSDictionary *question in questionArray) {
             
-            if ([answer objectForKey:@"accepted_answer_id"]){
+            if ([question objectForKey:@"accepted_answer_id"]){
                 
                 // Answer found
                 answeredQuestionFound = true;
                 
                 // Grab the correct answer's answer ID.
                 NSNumber *correctAnswerID;
-                correctAnswerID = [answer objectForKey:@"accepted_answer_id"];
+                correctAnswerID = [question objectForKey:@"accepted_answer_id"];
                 
                 if(DEBUG_MODE){
-                    NSLog(@"Correct answer ID %@", [answer objectForKey:@"accepted_answer_id"]);
+                    NSLog(@"Correct answer ID %@", [question objectForKey:@"accepted_answer_id"]);
                 }
-                
-                // /2.2/answers/17187693?order=desc&sort=activity&site=stackoverflow&filter=!9WgJfjxaP
                 
                 // Create an ApiRequest instance for the API answer retreival.
                 ApiRequest *apiAnswerFetch = [[ApiRequest alloc] initWithDomain: @"api.stackexchange.com"];
@@ -162,7 +160,7 @@ int main(int argc, const char * argv[])
                 // Make the request.
                 if ([apiAnswerFetch makeRequest] != APIREQUEST_REQUEST_SUCCESS){
                     
-                    printf("Error: Cannot connect to Stack Overflow\n");
+                    printf("Error: Problem occured whilst retrieving answer\n");
                     
                     if (DEBUG_MODE){
                         NSLog(@"%@", [apiAnswerFetch error]);
@@ -171,7 +169,64 @@ int main(int argc, const char * argv[])
                     exit(6);
                 }
                 
-                printf("outputting answer...");
+                // Check the HTTP response code from the API.
+                if (200 != [[apiAnswerFetch response] statusCode]){
+                    
+                    printf("Error: Invalid Stack Overflow API request\n");
+                    
+                    if (DEBUG_MODE){
+                        NSLog(@"%li", [[apiAnswerFetch response] statusCode]);
+                    }
+                    
+                    exit(7);
+                }
+                
+                // Create an NSDictionary from the NSData data object.
+                NSError *errorDict = nil;
+                NSDictionary *answersDict = [NSJSONSerialization JSONObjectWithData:[apiAnswerFetch data]
+                                                                            options:0
+                                                                              error:&errorDict];
+                
+                // Check that creation happened without error.
+                if (errorDict != nil) {
+                    
+                    printf("Error: Answer could not be found\n");
+                    
+                    if(DEBUG_MODE){
+                        NSLog(@"%@", errorDict);
+                    }
+                    
+                    exit(4);
+                }
+                
+                // Grab the answers node from the answersDict NSDictionary object.
+                NSArray *answerArray = [answersDict objectForKey:@"items"];
+                
+                // Check that we have at least one answer
+                if ([answerArray count] <= 0){
+                    
+                    printf("Error: Answer could not be found\n");
+                    
+                    if(DEBUG_MODE){
+                        NSLog(@"%@", answerArray);
+                    }
+                    
+                    exit(5);
+                }
+                
+                for (NSDictionary *answer in answerArray) {
+                    
+                    if([answer objectForKey:@"body_markdown"]){
+                        
+                        printf("\n");
+                        printf([[answer objectForKey:@"body_markdown"] UTF8String]);
+                        
+                    }
+                    
+                    if (DEBUG_MODE){
+                        NSLog(@"%@", answer);
+                    }
+                }
             
                 // Stop iterating.
                 break;
