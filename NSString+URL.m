@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Jon Carl Matthews. All rights reserved.
 //
 
-#import "NSString+URLEncoding.h"
+#import "NSString+URL.h"
 
 @implementation NSString (URLEncoding)
 

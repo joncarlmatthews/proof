@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "PreprocessorDirectives.h"
 #import "ApiRequest.h"
-#import "NSString+URLEncoding.h"
+#import "NSString+URL.h"
 #import "NSString+HTML.h"
 
 int main(int argc, const char * argv[])
