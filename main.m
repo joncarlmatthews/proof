@@ -10,6 +10,7 @@
 #import "PreprocessorDirectives.h"
 #import "ApiRequest.h"
 #import "NSString+URLEncoding.h"
+#import "NSString+HTML.h"
 
 int main(int argc, const char * argv[])
 {
@@ -216,10 +217,10 @@ int main(int argc, const char * argv[])
                 
                 for (NSDictionary *answer in answerArray) {
                     
-                    if([answer objectForKey:@"body_markdown"]){
+                    if([answer objectForKey:@"body"]){
                         
                         printf("\n");
-                        printf([[answer objectForKey:@"body_markdown"] UTF8String]);
+                        printf([[[answer objectForKey:@"body"] stringByStrippingHTML] UTF8String]);
                         
                     }
                     
