@@ -8,9 +8,9 @@
 
 #import <Foundation/Foundation.h>
 #import "PreprocessorDirectives.h"
-#import "ApiRequest.h"
 #import "NSString+URL.h"
 #import "NSString+HTML.h"
+#import "ApiRequest.h"
 
 int main(int argc, const char * argv[])
 {
@@ -215,12 +215,14 @@ int main(int argc, const char * argv[])
                     exit(5);
                 }
                 
+                // Outpul the answer.
                 for (NSDictionary *answer in answerArray) {
                     
                     if([answer objectForKey:@"body"]){
                         
                         printf("\n");
                         printf([[[answer objectForKey:@"body"] stringByStrippingHTML] UTF8String]);
+                        break;
                         
                     }
                     

@@ -12,10 +12,16 @@
 
 -(NSString *) stringByStrippingHTML
 {
-    NSRange r;
+    // Copy of the string value
     NSString *s = [self copy];
-    while ((r = [s rangeOfString:@"<[^>]+>" options:NSRegularExpressionSearch]).location != NSNotFound)
+    
+    NSRange r;
+
+    // Loop through replacing regex with ""
+    while ((r = [s rangeOfString:@"<[^>]+>" options:NSRegularExpressionSearch]).location != NSNotFound){
         s = [s stringByReplacingCharactersInRange:r withString:@""];
+    }
+    
     return s;
 }
 
