@@ -44,8 +44,21 @@ int main(int argc, const char * argv[])
         }
         
         // Extract the query string from the args.
-        NSString *queryStringRaw;
-        queryStringRaw = [NSString stringWithUTF8String:argv[1]];
+        NSMutableString *queryStringRaw = [[NSMutableString alloc] initWithString:@""];
+        
+        for (int i=0; i<argc; i++) {
+            
+            if (i == 0){
+                continue;
+            }
+            
+            [queryStringRaw appendString:[NSString stringWithUTF8String:argv[i]]];
+            
+            if (i != (argc - 1)){
+                [queryStringRaw appendString:@" "];
+            }
+            
+        }
         
         // Encode the query string so it's URL safe.
         NSString *queryStringEncoded;
