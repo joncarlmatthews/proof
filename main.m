@@ -10,6 +10,7 @@
 #import "PreprocessorDirectives.h"
 #import "NSString+URL.h"
 #import "NSString+HTML.h"
+#import "Tag.h"
 #import "ApiRequest.h"
 
 int main(int argc, const char * argv[])
@@ -56,6 +57,45 @@ int main(int argc, const char * argv[])
         // Set the method.
         [apiQuestionSearch setMethod:@"/2.2/search/advanced/"];
         
+        // Create an instance of the Tag class for the API tag parameters.
+        Tag *tag = [[Tag alloc] init];
+        
+        // Tagged parameter value.
+        NSMutableString *tagged = [[NSMutableString alloc] initWithString:@""];
+        
+        // Lopp through the tags and check to see if they exist within the
+        // question.
+        for (NSDictionary *tagElement in [tag tags]) {
+            
+            // Get the tag's name.
+            NSString *tagName = [tagElement objectForKey:@"name"];
+            
+            // Build the regex for the tag's name.
+            NSMutableString *regexPattern = [[NSMutableString alloc] initWithString:@"\\b("];
+            [regexPattern appendString:tagName];
+            [regexPattern appendString:@")\\b"];
+            
+            // Build the expression.
+            NSError *regexError = NULL;
+            NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:regexPattern
+                                                                                   options:NSRegularExpressionCaseInsensitive
+                                                                                     error:&regexError];
+            // Perform the expression.
+            NSUInteger numberOfMatches = [regex numberOfMatchesInString:queryStringRaw
+                                                                options:0
+                                                                  range:NSMakeRange(0, [queryStringRaw length])];
+            
+            if (numberOfMatches > 0) {
+                [tagged appendString:tagName];
+                [tagged appendString:@";"];
+                
+                // Multiple tags are treated as AND not OR, so the API
+                // wasnt returning any results for long(ish) questions
+                break;
+            }
+        }
+        
+        
         // Create a dictionary of parameters to send to the API.
         NSDictionary *paramBind = [[NSDictionary alloc] initWithObjectsAndKeys:@"desc", @"order",
                                                                                 @"relevance", @"sort",
@@ -63,6 +103,7 @@ int main(int argc, const char * argv[])
                                                                                 @"1", @"answers",
                                                                                 @"stackoverflow", @"site",
                                                                                 queryStringEncoded, @"q",
+                                                                                tagged, @"tagged",
                                                                                 nil];
         // Set the parameters.
         [apiQuestionSearch setParams: paramBind];
@@ -89,6 +130,10 @@ int main(int argc, const char * argv[])
             }
             
             exit(3);
+        }
+        
+        if (DEBUG_MODE){
+            NSLog(@"%@", [apiQuestionSearch getUrl]);
         }
         
         
