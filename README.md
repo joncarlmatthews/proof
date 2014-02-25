@@ -4,7 +4,7 @@ Command line tool for searching StackOverflow for the first correct answer to a 
 
 Written by: [Jon Matthews](https://github.com/joncarlmatthews)
 
-Date: 18.12.13
+Date: 25/02/2014
 
 ## Installation
 
