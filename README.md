@@ -20,8 +20,6 @@ Date: 25/02/2014
 
 Output should look like:
 
-	````
 	ch_with_index do |item, index|
  		 puts "current_index: #{index}
 	end
-	````
