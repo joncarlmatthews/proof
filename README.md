@@ -1,8 +1,8 @@
 # proof v0.1
 
-proof is a command line tool that answers programming related questions.
+proof is a little command line utility that answers programming related questions.
 
-You type a question and proof will use the StackOverflow API to find the first correctly answered question based on your term.
+You type a question and proof will use the StackOverflow API to find the first correctly answered question based on your search term.
 
 Written by: [Jon Matthews](https://github.com/joncarlmatthews)
 
