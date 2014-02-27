@@ -1,6 +1,8 @@
 # proof v0.1
 
-Command line tool for searching StackOverflow for the first correct answer to a given question.
+proof is a command line tool that answers programming related questions.
+
+You type a question and proof will use the StackOverflow API to find the first correctly answered question based on your term.
 
 Written by: [Jon Matthews](https://github.com/joncarlmatthews)
 
