@@ -16,9 +16,9 @@ Date: 25/02/2014
 
 ## Asking a question
 
-	usage: proof [search term]
+````usage: proof [search term]````
 
-	$ ./proof how to iterate over NSArray
+````$ ./proof how to iterate over NSArray````
 
 Example output:
 
@@ -28,9 +28,8 @@ Example output:
 	    // do something with object
 	}
 
-
 	This construct is used to enumerate objects [...]
 
-It's a good idea to pipe the outpul through less so you can scroll through long answers:
+It's a good idea to pipe the output through less so you can scroll through long answers:
 
 	$ ./proof how to iterate over NSArray | less
