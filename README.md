@@ -1,6 +1,8 @@
 # proof v0.1
 
-Command line tool for searching StackOverflow for the first correct answer to a given question.
+proof is a little command line utility that answers programming related questions.
+
+You type a question and proof will use the StackOverflow API to find the first correctly answered question based on your search term.
 
 Written by: [Jon Matthews](https://github.com/joncarlmatthews)
 
@@ -16,9 +18,9 @@ Date: 25/02/2014
 
 ## Asking a question
 
-	usage: proof [search term]
+````usage: proof [search term]````
 
-	$ ./proof how to iterate over NSArray
+````$ ./proof how to iterate over NSArray````
 
 Example output:
 
@@ -28,9 +30,8 @@ Example output:
 	    // do something with object
 	}
 
-
 	This construct is used to enumerate objects [...]
 
-It's a good idea to pipe the outpul through less so you can scroll through long answers:
+It's a good idea to pipe the output through less so you can scroll through long answers:
 
 	$ ./proof how to iterate over NSArray | less
