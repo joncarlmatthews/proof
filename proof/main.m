@@ -5,6 +5,9 @@
 //  Created by Jon Carl Matthews on 17/02/2014.
 //  Copyright (c) 2014 Jon Carl Matthews. All rights reserved.
 //
+//  If Proof could see me now I know he'd be proud
+//  Somewhere in me deep down there's something in me he found
+//
 
 #import <Foundation/Foundation.h>
 #import "PreprocessorDirectives.h"
